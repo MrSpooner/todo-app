@@ -32,13 +32,11 @@ export default function useTodos() {
     );
   };
 
-  const editTodo = (id:number, text: string) => {
-        setTodos((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, text } : item
-      )
+  const editTodo = (id: number, text: string) => {
+    setTodos((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, text } : item))
     );
-  }
+  };
 
   return { todos, addTodo, removeTodo, toggleTodo, editTodo };
 }

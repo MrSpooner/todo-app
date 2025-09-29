@@ -3,7 +3,8 @@ import type { Todo } from "../types/index";
 const storageKey = "todoStorage";
 
 export function getTodos(): Todo[] {
-  const data = localStorage.getItem("storageKey");
+  const data = localStorage.getItem(storageKey);
+
   return data ? JSON.parse(data) : [];
 }
 
