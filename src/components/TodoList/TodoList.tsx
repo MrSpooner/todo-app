@@ -1,5 +1,6 @@
 import type { Todo } from "../../types/index";
 import { TodoItem } from "../TodoItem/TodoItem";
+import { TodoUl } from "../ui";
 
 type Props = {
   todos: Todo[];
@@ -10,7 +11,7 @@ type Props = {
 
 export default function TodoList({ todos, onToggle, onRemove, onEdit }: Props) {
   return (
-    <ul>
+    <TodoUl>
       {todos.map((item) => (
         <TodoItem
           key={item.id}
@@ -20,6 +21,6 @@ export default function TodoList({ todos, onToggle, onRemove, onEdit }: Props) {
           onEdit={onEdit}
         />
       ))}
-    </ul>
+    </TodoUl>
   );
 }

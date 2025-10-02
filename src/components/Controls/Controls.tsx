@@ -1,4 +1,5 @@
 import React from "react";
+import { ControlsContainer, RadioGroup, Label, SortButton } from "../ui";
 
 type Props = {
   filter: "all" | "done" | "active";
@@ -14,56 +15,55 @@ export const Controls = ({
   setSortOrder,
 }: Props) => {
   return (
-    <div>
-      <div>
-        <label>
+    <ControlsContainer>
+      <RadioGroup>
+        <Label active={filter === "all"}>
           <input
             type="radio"
             checked={filter === "all"}
-            onChange={() => {
-              setFilter("all");
-            }}
-          />{" "}
+            onChange={() => setFilter("all")}
+            style={{ marginRight: 4 }}
+          />
           Все
-        </label>
+        </Label>
 
-        <label>
+        <Label active={filter === "done"}>
           <input
             type="radio"
             checked={filter === "done"}
-            onChange={() => {
-              setFilter("done");
-            }}
-          />{" "}
+            onChange={() => setFilter("done")}
+            style={{ marginRight: 4 }}
+          />
           Готовые
-        </label>
+        </Label>
 
-        <label>
+        <Label active={filter === "active"}>
           <input
             type="radio"
             checked={filter === "active"}
-            onChange={() => {
-              setFilter("active");
-            }}
-          />{" "}
+            onChange={() => setFilter("active")}
+            style={{ marginRight: 4 }}
+          />
           Неготовые
-        </label>
-      </div>
+        </Label>
+      </RadioGroup>
 
-      <div>
-        <button
+      <div style={{ display: "flex", gap: 8 }}>
+        <SortButton
+          active={sortOrder === "new"}
           onClick={() => setSortOrder("new")}
           disabled={sortOrder === "new"}
         >
           Новые
-        </button>
-        <button
+        </SortButton>
+        <SortButton
+          active={sortOrder === "old"}
           onClick={() => setSortOrder("old")}
           disabled={sortOrder === "old"}
         >
           Старые
-        </button>
+        </SortButton>
       </div>
-    </div>
+    </ControlsContainer>
   );
 };

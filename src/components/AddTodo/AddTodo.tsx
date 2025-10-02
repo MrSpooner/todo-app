@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Row, Input, Button } from "../ui";
 
 type Props = {
   onAdd: (text: string) => { error?: string | null } | void;
@@ -9,31 +10,22 @@ export const AddTodo = ({ onAdd }: Props) => {
 
   const submit = () => {
     const trimmed = text.trim();
-
-    onAdd(trimmed);
+    const res = onAdd(trimmed);
+    if (res && res.error) return;
     setText("");
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 8,
-        marginBottom: 12,
-      }}
-    >
-      <input
+    <Row>
+      <Input
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            submit();
-          }
+          if (e.key === "Enter") submit();
         }}
         placeholder="Новая задача"
-        style={{ flex: 1, padding: 8 }}
       />
-      <button onClick={submit}>Добавить</button>
-    </div>
+      <Button onClick={submit}>Добавить</Button>
+    </Row>
   );
 };

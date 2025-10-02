@@ -4,6 +4,7 @@ import useTodos from "./hooks/useTodos";
 import TodoList from "./components/TodoList/TodoList";
 import { Controls } from "./components/Controls/Controls";
 import { useTheme } from "./context/ThemeContext";
+import { AppContainer, Header, Title, Content, ThemeButton } from "./components/ui";
 
 function App() {
   const { todos, addTodo, removeTodo, toggleTodo, editTodo } = useTodos();
@@ -13,70 +14,49 @@ function App() {
 
   const visibleTodos = useMemo(() => {
     let list = todos.filter((item) => {
-      let res;
-
-      if (filter === "all") {
-        res = true;
-      } else if (filter === "done") {
-        res = item.completed;
-      } else {
-        res = !item.completed;
-      }
-
-      return res;
+      if (filter === "all") return true;
+      if (filter === "done") return item.completed;
+      return !item.completed;
     });
 
-    list = [...list].sort((a, b) => {
+    return [...list].sort((a, b) => {
       const A = new Date(a.createdAt).getTime();
       const B = new Date(b.createdAt).getTime();
-
       return sortOrder === "new" ? B - A : A - B;
     });
-
-    return list;
   }, [todos, filter, sortOrder]);
 
   return (
-    <div style={{ maxWidth: 860, margin: "24px auto", padding: 12 }}>
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 12,
-        }}
-      >
-        <h1 style={{ margin: 0, fontSize: 20 }}>Todo App</h1>
-        <div style={{ marginLeft: "auto" }}>
-          <button onClick={toggle}>
-            Тема: {theme === "light" ? "Светлая" : "Тёмная"}
-          </button>
-        </div>
-      </header>
+    <AppContainer>
+      <Header>
+        <Title>Todo App</Title>
+        <ThemeButton onClick={toggle}>
+          Тема: {theme === "light" ? "Светлая" : "Тёмная"}
+        </ThemeButton>
+      </Header>
 
-      <div
-        style={{
-          maxWidth: 720,
-          margin: "24 auto",
-          padding: 12,
-        }}
-      >
-        <h1>Todo App</h1>
+      <Content>
         <Controls
           filter={filter}
           setFilter={setFilter}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}
         />
-        <AddTodo onAdd={(text) => addTodo(text)} />
+        <AddTodo
+          onAdd={(text) => {
+            const trimmed = text.trim();
+            if (!trimmed) return alert("Поле не может быть пустым");
+            addTodo(trimmed);
+          }}
+        />
         <TodoList
           todos={visibleTodos}
           onToggle={toggleTodo}
           onRemove={removeTodo}
           onEdit={editTodo}
         />
-      </div>
-    </div>
+      </Content>
+    </AppContainer>
   );
 }
 

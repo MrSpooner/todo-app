@@ -1,5 +1,48 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { Todo } from "../../types/index";
+import styled from "styled-components";
+
+const TodoLi = styled.li`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  background: ${({ theme }) => theme.card};
+  border-radius: 6px;
+`;
+
+const TodoText = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== "completed",
+})<{ completed: boolean }>`
+  text-decoration: ${({ completed }) => (completed ? "line-through" : "none")};
+  color: ${({ theme }) => theme.text};
+`;
+
+const SubText = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.sub};
+`;
+
+const TodoButton = styled.button`
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: transparent;
+  color: ${({ theme }) => theme.text};
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const TodoInput = styled.input`
+  flex: 1;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.card};
+`;
 
 type Props = {
   todo: Todo;
@@ -13,15 +56,15 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
   const [value, setValue] = useState(todo.text);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const startEdit = () => {
-    setEditing(true);
-  };
+  const startEdit = () => setEditing(true);
   const cancel = () => {
     setEditing(false);
     setValue(todo.text);
   };
   const save = () => {
-    onEdit(todo.id, value.trim());
+    if (value.trim()) {
+      onEdit(todo.id, value.trim());
+    }
     setEditing(false);
   };
 
@@ -34,49 +77,34 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
   }, [editing, todo.text]);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      save();
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      cancel();
-    }
+    if (e.key === "Enter") save();
+    if (e.key === "Escape") cancel();
   };
 
   return (
-    <li style={{ display: "flex", gap: 12, alignItems: "center", padding: 8 }}>
+    <TodoLi>
       <input
         type="checkbox"
         checked={todo.completed}
         onChange={() => onToggle(todo.id)}
       />
       {editing ? (
-        <div style={{ flex: 1 }}>
-          <input
-            ref={inputRef}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onKeyDown={onKeyDown}
-          />
-        </div>
+        <TodoInput
+          ref={inputRef}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={onKeyDown}
+        />
       ) : (
         <>
           <div style={{ flex: 1 }}>
-            <div
-              style={{
-                textDecoration: todo.completed ? "line-through" : "none",
-              }}
-            >
-              {todo.text}
-            </div>
-            <div style={{ fontSize: 12, color: "#666" }}>
-              {new Date(todo.createdAt).toLocaleString()}
-            </div>
+            <TodoText completed={todo.completed}>{todo.text}</TodoText>
+            <SubText>{new Date(todo.createdAt).toLocaleString()}</SubText>
           </div>
-          <button onClick={startEdit}>Редактировать</button>
-          <button onClick={() => onRemove(todo.id)}>Удалить</button>
+          <TodoButton onClick={startEdit}>Редактировать</TodoButton>
+          <TodoButton onClick={() => onRemove(todo.id)}>Удалить</TodoButton>
         </>
       )}
-    </li>
+    </TodoLi>
   );
 }
