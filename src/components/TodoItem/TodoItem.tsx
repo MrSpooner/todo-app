@@ -1,48 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { Todo } from "../../types/index";
 import styled from "styled-components";
-
-const TodoLi = styled.li`
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 8px;
-  background: ${({ theme }) => theme.card};
-  border-radius: 6px;
-`;
-
-const TodoText = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== "completed",
-})<{ completed: boolean }>`
-  text-decoration: ${({ completed }) => (completed ? "line-through" : "none")};
-  color: ${({ theme }) => theme.text};
-`;
-
-const SubText = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.sub};
-`;
-
-const TodoButton = styled.button`
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
-  padding: 4px 8px;
-  background: transparent;
-  color: ${({ theme }) => theme.text};
-  &:hover {
-    opacity: 0.9;
-  }
-`;
-
-const TodoInput = styled.input`
-  flex: 1;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: ${({ theme }) => theme.text};
-  background: ${({ theme }) => theme.card};
-`;
+import { TodoLi, TodoInput, TodoText, SubText, TodoButton } from "../ui";
 
 type Props = {
   todo: Todo;
