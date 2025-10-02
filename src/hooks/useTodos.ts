@@ -10,6 +10,12 @@ export default function useTodos() {
   }, [todos]);
 
   const addTodo = (text: string) => {
+    const clean = text.trim();
+    if (!clean)
+      return {
+        error: "Поле не может быть пустым!",
+      };
+
     const newTodo = {
       id: Date.now(),
       text,
@@ -33,6 +39,10 @@ export default function useTodos() {
   };
 
   const editTodo = (id: number, text: string) => {
+    const clean = text.trim();
+    
+    if (!clean) return { error: "Поле не может быть пустым" };
+
     setTodos((prev) =>
       prev.map((item) => (item.id === id ? { ...item, text } : item))
     );
