@@ -4,6 +4,7 @@ import useTodos from "./hooks/useTodos";
 import TodoList from "./components/TodoList/TodoList";
 import { Controls } from "./components/Controls/Controls";
 import { useTheme } from "./context/ThemeContext";
+import TodosPage from './ui/TodosPage';
 import { AppContainer, Header, Title, Content, ThemeButton } from "./components/ui";
 
 function App() {
@@ -27,36 +28,37 @@ function App() {
   }, [todos, filter, sortOrder]);
 
   return (
-    <AppContainer>
-      <Header>
-        <Title>Todo App</Title>
-        <ThemeButton onClick={toggle}>
-          Тема: {theme === "light" ? "Светлая" : "Тёмная"}
-        </ThemeButton>
-      </Header>
+    // <AppContainer>
+    //   <Header>
+    //     <Title>Todo App</Title>
+    //     <ThemeButton onClick={toggle}>
+    //       Тема: {theme === "light" ? "Светлая" : "Тёмная"}
+    //     </ThemeButton>
+    //   </Header>
 
-      <Content>
-        <Controls
-          filter={filter}
-          setFilter={setFilter}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-        />
-        <AddTodo
-          onAdd={(text) => {
-            const trimmed = text.trim();
-            if (!trimmed) return alert("Поле не может быть пустым");
-            addTodo(trimmed);
-          }}
-        />
-        <TodoList
-          todos={visibleTodos}
-          onToggle={toggleTodo}
-          onRemove={removeTodo}
-          onEdit={editTodo}
-        />
-      </Content>
-    </AppContainer>
+    //   <Content>
+    //     <Controls
+    //       filter={filter}
+    //       setFilter={setFilter}
+    //       sortOrder={sortOrder}
+    //       setSortOrder={setSortOrder}
+    //     />
+    //     <AddTodo
+    //       onAdd={(text) => {
+    //         const trimmed = text.trim();
+    //         if (!trimmed) return alert("Поле не может быть пустым");
+    //         addTodo(trimmed);
+    //       }}
+    //     />
+    //     <TodoList
+    //       todos={visibleTodos}
+    //       onToggle={toggleTodo}
+    //       onRemove={removeTodo}
+    //       onEdit={editTodo}
+    //     />
+    //   </Content>
+    // </AppContainer>
+    <TodosPage/>
   );
 }
 
