@@ -1,65 +1,130 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AddTodo } from "./components/AddTodo/AddTodo";
-import useTodos from "./hooks/useTodos";
 import TodoList from "./components/TodoList/TodoList";
 import { Controls } from "./components/Controls/Controls";
 import { useTheme } from "./context/ThemeContext";
-import TodosPage from './ui/TodosPage';
-import { AppContainer, Header, Title, Content, ThemeButton } from "./components/ui";
+import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import Pages from "./components/Pages/Pages";
+import {
+  AppContainer,
+  Header,
+  Title,
+  Content,
+  ThemeButton,
+} from "./components/ui";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import {
+  loadTodos,
+  setPage,
+  setLimit,
+  setFilter as setApiFilter,
+  createTodoThunk,
+  deleteTodoThunk,
+  toggleTodoThunk,
+  updateTodoThunk,
+} from "./store/todoSlice";
 
-function App() {
-  const { todos, addTodo, removeTodo, toggleTodo, editTodo } = useTodos();
-  const [filter, setFilter] = useState<"all" | "done" | "active">("all");
-  const [sortOrder, setSortOrder] = useState<"old" | "new">("new");
+export default function App() {
+  const d = useAppDispatch();
   const { theme, toggle } = useTheme();
+  const {
+    items,
+    status,
+    error,
+    page,
+    limit,
+    totalPages,
+    filter,
+  } = useAppSelector((s) => s.todos);
+
+  const [uiFilter, setUiFilter] = useState<"all" | "completed" | "active">(
+    "all"
+  );
+  const [sortOrder, setSortOrder] = useState<"old" | "new">("new");
+
+  const muiTheme = useMemo(
+    () =>
+      createTheme({
+        palette: { mode: theme === "dark" ? "dark" : "light" },
+      }),
+    [theme]
+  );
+
+  useEffect(() => {
+    setUiFilter(filter);
+  }, [filter]);
+
+  useEffect(() => {
+    d(loadTodos({ page, limit, filter: filter }));
+  }, [d, page, limit, filter]);
 
   const visibleTodos = useMemo(() => {
-    let list = todos.filter((item) => {
-      if (filter === "all") return true;
-      if (filter === "done") return item.completed;
-      return !item.completed;
-    });
+    const list = items;
 
     return [...list].sort((a, b) => {
       const A = new Date(a.createdAt).getTime();
       const B = new Date(b.createdAt).getTime();
+
       return sortOrder === "new" ? B - A : A - B;
     });
-  }, [todos, filter, sortOrder]);
+  }, [items, sortOrder]);
 
   return (
-    // <AppContainer>
-    //   <Header>
-    //     <Title>Todo App</Title>
-    //     <ThemeButton onClick={toggle}>
-    //       Тема: {theme === "light" ? "Светлая" : "Тёмная"}
-    //     </ThemeButton>
-    //   </Header>
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
 
-    //   <Content>
-    //     <Controls
-    //       filter={filter}
-    //       setFilter={setFilter}
-    //       sortOrder={sortOrder}
-    //       setSortOrder={setSortOrder}
-    //     />
-    //     <AddTodo
-    //       onAdd={(text) => {
-    //         const trimmed = text.trim();
-    //         if (!trimmed) return alert("Поле не может быть пустым");
-    //         addTodo(trimmed);
-    //       }}
-    //     />
-    //     <TodoList
-    //       todos={visibleTodos}
-    //       onToggle={toggleTodo}
-    //       onRemove={removeTodo}
-    //       onEdit={editTodo}
-    //     />
-    //   </Content>
-    // </AppContainer>
-    <TodosPage/>
+      <AppContainer>
+        <Header>
+          <Title>Todo App</Title>
+          <ThemeButton onClick={toggle}>
+            Тема: {theme === "light" ? "Светлая" : "Тёмная"}
+          </ThemeButton>
+        </Header>
+
+        <Content>
+          <Controls
+            filter={uiFilter}
+            setFilter={(f) => d(setApiFilter(f))}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
+
+          <AddTodo
+            onAdd={(text) => {
+              const t = text.trim();
+              if (!t) return alert("Поле не может быть пустым");
+              d(createTodoThunk(t));
+            }}
+          />
+
+          {status === "loading" && <i>Загрузка…</i>}
+          {status === "failed" && (
+            <span style={{ color: "crimson" }}>{error}</span>
+          )}
+
+          {status === "succeeded" && (
+            <>
+              <TodoList
+                todos={visibleTodos}
+                onToggle={(id, completed) =>
+                  d(toggleTodoThunk({ id, completed }))
+                }
+                onRemove={(id) => d(deleteTodoThunk(id))}
+                onEdit={(id, text) => d(updateTodoThunk({ id, text }))}
+              />
+
+              <Pages
+                page={page}
+                totalPages={totalPages}
+                d={d}
+                setPage={setPage}
+                limit={limit}
+                setLimit={setLimit}
+              />
+            </>
+          )}
+        </Content>
+      </AppContainer>
+    </ThemeProvider>
   );
 }
-
-export default App;

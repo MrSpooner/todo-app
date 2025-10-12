@@ -2,10 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import type { Todo } from "../../types/index";
 import styled from "styled-components";
 import { TodoLi, TodoInput, TodoText, SubText, TodoButton } from "../ui";
+import { deleteTodoThunk, toggleTodoThunk } from "../../store/todoSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { updateTodoThunk } from "../../store/todoSlice";
 
 type Props = {
   todo: Todo;
-  onToggle: (id: number) => void;
+  onToggle: (id: number, completed: boolean) => void;
   onRemove: (id: number) => void;
   onEdit: (id: number, text: string) => void;
 };
@@ -26,7 +29,7 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
     }
     setEditing(false);
   };
-
+  const d = useAppDispatch();
   useEffect(() => {
     if (editing) {
       setValue(todo.text);
@@ -39,13 +42,12 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
     if (e.key === "Enter") save();
     if (e.key === "Escape") cancel();
   };
-
   return (
     <TodoLi>
       <input
         type="checkbox"
         checked={todo.completed}
-        onChange={() => onToggle(todo.id)}
+        onChange={() => onToggle(todo.id, todo.completed)}
       />
       {editing ? (
         <TodoInput

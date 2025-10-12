@@ -2,8 +2,8 @@ import React from "react";
 import { ControlsContainer, RadioGroup, Label, SortButton } from "../ui";
 
 type Props = {
-  filter: "all" | "done" | "active";
-  setFilter: (f: "all" | "done" | "active") => void;
+  filter: "all" | "completed" | "active";
+  setFilter: (f: "all" | "completed" | "active") => void;
   sortOrder: "new" | "old";
   setSortOrder: (s: "new" | "old") => void;
 };
@@ -27,11 +27,11 @@ export const Controls = ({
           Все
         </Label>
 
-        <Label active={filter === "done"}>
+        <Label active={filter === "completed"}>
           <input
             type="radio"
-            checked={filter === "done"}
-            onChange={() => setFilter("done")}
+            checked={filter === "completed"}
+            onChange={() => setFilter("completed")}
             style={{ marginRight: 4 }}
           />
           Готовые

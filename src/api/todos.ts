@@ -26,3 +26,27 @@ export async function createTodo(text: string) {
 
   return data;
 }
+
+export async function deleteTodo(id: number | string) {
+  await api.delete(`/todos/${id}`);
+}
+
+export async function updateTodo(
+  id: number | string,
+  patch: Partial<{ text: string; completed: boolean }>
+) {
+  const { data } = await api.patch(`/todos/${id}`, patch);
+  return data;
+}
+
+export async function toggleTodo(id: number | string, completed: boolean) {
+  return updateTodo(id, { completed: !completed });
+}
+
+export async function putTodo(
+  id: number | string,
+  body: { id: number | string; text: string; completed: boolean; createdAt: string }
+) {
+  const { data } = await api.put(`/todos/${id}`, body);
+  return data;
+}

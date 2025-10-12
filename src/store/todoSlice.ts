@@ -1,7 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Filter, Todo, PaginatedResponse } from "../types/todo";
-import { fetchTodos, createTodo } from "../api/todos";
+import {
+  fetchTodos,
+  createTodo,
+  deleteTodo,
+  toggleTodo,
+  updateTodo,
+  putTodo,
+} from "../api/todos";
 
 export interface TodosState {
   items: Todo[];
@@ -48,6 +55,46 @@ export const createTodoThunk = createAsyncThunk<
   return null;
 });
 
+export const deleteTodoThunk = createAsyncThunk<
+  void,
+  number | string,
+  { state: { todos: TodosState } }
+>("todos/delete", async (id, { getState, dispatch }) => {
+  await deleteTodo(id);
+
+  const { page, limit, filter } = getState().todos;
+
+  await dispatch(loadTodos({ page, limit, filter }));
+});
+
+export const toggleTodoThunk = createAsyncThunk<
+  void,
+  { id: number | string; completed: boolean },
+  { state: { todos: TodosState } }
+>("todos/toggle", async ({ id, completed }, { getState, dispatch }) => {
+  const { items, page, limit, filter } = getState().todos;
+  const todo = items.find((t) => String(t.id) === String(id));
+
+  if (!todo) return;
+
+  await putTodo(id, { ...todo, completed: !completed });
+  await dispatch(loadTodos({ page, limit, filter }));
+});
+
+export const updateTodoThunk = createAsyncThunk<
+  void,
+  { id: number | string; text: string },
+  { state: { todos: TodosState } }
+>("todos/update", async ({ id, text }, { getState, dispatch }) => {
+  const { items, page, limit, filter } = getState().todos;
+  const todo = items.find((t) => String(t.id) === String(id));
+
+  if (!todo) return;
+
+  await putTodo(id, { ...todo, text });
+  await dispatch(loadTodos({ page, limit, filter }));
+});
+
 const todosSlice = createSlice({
   name: "todos",
   initialState,
@@ -84,6 +131,6 @@ const todosSlice = createSlice({
       });
   },
 });
-console.log('TEST', todosSlice);
+console.log("TEST", todosSlice);
 export const { setPage, setLimit, setFilter } = todosSlice.actions;
 export default todosSlice.reducer;

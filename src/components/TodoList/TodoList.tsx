@@ -4,7 +4,7 @@ import { TodoUl } from "../ui";
 
 type Props = {
   todos: Todo[];
-  onToggle: (id: number) => void;
+  onToggle: (id: number, completed: boolean) => void;
   onRemove: (id: number) => void;
   onEdit: (id: number, text: string) => void;
 };
