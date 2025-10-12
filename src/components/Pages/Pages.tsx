@@ -1,24 +1,20 @@
 import Pagination from "@mui/material/Pagination";
-import type { RootState, AppDispatch } from "../../store/index";
 import type { JSX } from "react";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 type PagesProps = {
   page: number;
   totalPages: number;
-  d: AppDispatch;
-  setPage: (page: number) => PayloadAction<number>;
+  onPageChange: (page: number) => void;
   limit: number;
-  setLimit: (limit: number) => PayloadAction<number>;
+  onLimitChange: (limit: number) => void;
 };
 
 export default function Pages({
   page,
   totalPages,
-  d,
-  setPage,
+  onPageChange,
   limit,
-  setLimit,
+  onLimitChange,
 }: PagesProps): JSX.Element {
   return (
     <div
@@ -32,7 +28,7 @@ export default function Pages({
       <Pagination
         page={page}
         count={Math.max(totalPages, 1)}
-        onChange={(_, p) => d(setPage(p))}
+        onChange={(_, p) => onPageChange(p)}
         shape="rounded"
       />
 
@@ -40,7 +36,7 @@ export default function Pages({
         На странице:
         <select
           value={limit}
-          onChange={(e) => d(setLimit(Number(e.target.value)))}
+          onChange={(e) => onLimitChange(Number(e.target.value))}
         >
           {[5, 10, 20].map((n) => (
             <option key={n} value={n}>

@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import type { Todo } from "../../types/index";
-import styled from "styled-components";
 import { TodoLi, TodoInput, TodoText, SubText, TodoButton } from "../ui";
-import { deleteTodoThunk, toggleTodoThunk } from "../../store/todoSlice";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { updateTodoThunk } from "../../store/todoSlice";
 
 type Props = {
   todo: Todo;
@@ -17,7 +13,6 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(todo.text);
   const inputRef = useRef<HTMLInputElement | null>(null);
-
   const startEdit = () => setEditing(true);
   const cancel = () => {
     setEditing(false);
@@ -29,7 +24,7 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
     }
     setEditing(false);
   };
-  const d = useAppDispatch();
+
   useEffect(() => {
     if (editing) {
       setValue(todo.text);

@@ -116,10 +116,9 @@ export default function App() {
               <Pages
                 page={page}
                 totalPages={totalPages}
-                d={d}
-                setPage={setPage}
+                onPageChange={(p) => d(setPage(p))}
                 limit={limit}
-                setLimit={setLimit}
+                onLimitChange={(l) => d(setLimit(l))}
               />
             </>
           )}
