@@ -53,8 +53,8 @@ export const TodoLi = styled.li`
   border-radius: 6px;
 `;
 
-export const TodoText = styled.div<{ completed: boolean }>`
-  text-decoration: ${({ completed }) => (completed ? "line-through" : "none")};
+export const TodoText = styled.div<{ $completed: boolean }>`
+  text-decoration: ${({ $completed }) => ($completed ? "line-through" : "none")};
   color: ${({ theme }) => theme.text};
 `;
 

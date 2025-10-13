@@ -54,7 +54,7 @@ export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
       ) : (
         <>
           <div style={{ flex: 1 }}>
-            <TodoText completed={todo.completed}>{todo.text}</TodoText>
+            <TodoText $completed={todo.completed}>{todo.text}</TodoText>
             <SubText>{new Date(todo.createdAt).toLocaleString()}</SubText>
           </div>
           <TodoButton onClick={startEdit}>Редактировать</TodoButton>
