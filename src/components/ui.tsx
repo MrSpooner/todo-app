@@ -182,3 +182,8 @@ export const SortButton = styled.button.withConfig({
   color: ${({ theme, active }) => (active ? "#fff" : theme.text)};
   transition: background 0.2s;
 `;
+
+export const PageContainer = styled.div`
+  padding: 24px;
+  color: ${({ theme }) => theme.text};
+`;

@@ -1,12 +1,12 @@
-import type { Todo } from "../../types/index";
+import type { Todo } from "../../features/todos/todosApi";
 import { TodoItem } from "../TodoItem/TodoItem";
 import { TodoUl } from "../ui";
 
 type Props = {
   todos: Todo[];
-  onToggle: (id: number, completed: boolean) => void;
-  onRemove: (id: number) => void;
-  onEdit: (id: number, text: string) => void;
+  onToggle: (id: string, completed: boolean) => void;
+  onRemove: (id: string) => void;
+  onEdit: (id: string, text: string) => void;
 };
 
 export default function TodoList({ todos, onToggle, onRemove, onEdit }: Props) {

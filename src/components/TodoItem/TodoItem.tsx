@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import type { Todo } from "../../types/index";
+import type { Todo } from "../../features/todos/todosApi";
 import { TodoLi, TodoInput, TodoText, SubText, TodoButton } from "../ui";
 
 type Props = {
   todo: Todo;
-  onToggle: (id: number, completed: boolean) => void;
-  onRemove: (id: number) => void;
-  onEdit: (id: number, text: string) => void;
+  onToggle: (id: string, completed: boolean) => void;
+  onRemove: (id: string) => void;
+  onEdit: (id: string, text: string) => void;
 };
 
 export function TodoItem({ todo, onToggle, onRemove, onEdit }: Props) {
